@@ -1,6 +1,6 @@
 package com.robert.codingchallenge.service;
 
-import com.robert.codingchallenge.model.City;
+import com.robert.codingchallenge.model.data.City;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package com.robert.codingchallenge.model;
+package com.robert.codingchallenge.model.data;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

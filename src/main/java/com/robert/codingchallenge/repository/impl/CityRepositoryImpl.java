@@ -1,6 +1,6 @@
 package com.robert.codingchallenge.repository.impl;
 
-import com.robert.codingchallenge.model.City;
+import com.robert.codingchallenge.model.data.City;
 import com.robert.codingchallenge.repository.CityRepository;
 import com.robert.codingchallenge.util.TSVParser;
 import jakarta.annotation.PostConstruct;

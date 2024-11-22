@@ -1,7 +1,8 @@
 package com.robert.codingchallenge.controller;
 
 
-import com.robert.codingchallenge.model.City;
+import com.robert.codingchallenge.model.data.City;
+import com.robert.codingchallenge.model.dto.GetSuggestionsResponseDTO;
 import com.robert.codingchallenge.service.CityService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -17,8 +18,9 @@ public class CityController {
 	private final CityService cityService;
 
 	@GetMapping("/suggestions")
-	public ResponseEntity<List<City>> getSuggestions() {
+	public ResponseEntity<GetSuggestionsResponseDTO> getSuggestions() {
 		List<City> cities = cityService.getAllCities().stream().limit(100).collect(Collectors.toList());
-		return ResponseEntity.ok(cities);
+		GetSuggestionsResponseDTO response = new GetSuggestionsResponseDTO(cities);
+		return ResponseEntity.ok(response);
 	}
 }

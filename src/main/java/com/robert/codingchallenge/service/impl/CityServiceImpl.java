@@ -1,6 +1,6 @@
 package com.robert.codingchallenge.service.impl;
 
-import com.robert.codingchallenge.model.City;
+import com.robert.codingchallenge.model.data.City;
 import com.robert.codingchallenge.repository.CityRepository;
 import com.robert.codingchallenge.service.CityService;
 import lombok.AllArgsConstructor;
