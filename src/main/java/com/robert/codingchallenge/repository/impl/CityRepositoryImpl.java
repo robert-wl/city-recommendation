@@ -36,4 +36,9 @@ public class CityRepositoryImpl implements CityRepository {
 		cities.addAll(data);
 		log.info("Loaded {} cities", cities.size());
 	}
+
+	@Override
+	public List<City> getAllCities() {
+		return cities;
+	}
 }
