@@ -7,20 +7,21 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Optional;
 
 @Slf4j
 @Component
 public class FileReader {
-	public String read(String path) {
-		try {
+	public Optional<String> read(String path) {
+		try (
+				InputStream inputStream = getClass().getClassLoader().getResourceAsStream(path);
+				BufferedReader reader = inputStream == null ? null : new BufferedReader(new InputStreamReader(inputStream))
+		) {
 			StringBuilder data = new StringBuilder();
-			InputStream inputStream = getClass().getClassLoader().getResourceAsStream(path);
 
-			if (inputStream == null) {
-				return "";
+			if (reader == null) {
+				return Optional.empty();
 			}
-
-			BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
 
 			String line;
 
@@ -28,10 +29,10 @@ public class FileReader {
 				data.append(line).append("\n");
 			}
 
-			return data.toString();
+			return Optional.of(data.toString());
 		} catch (IOException e) {
 			log.error("Error reading file: {}", e.getMessage());
-			return "";
+			return Optional.empty();
 		}
 	}
 }

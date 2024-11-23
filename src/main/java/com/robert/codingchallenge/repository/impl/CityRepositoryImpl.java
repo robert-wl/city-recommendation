@@ -39,7 +39,9 @@ public class CityRepositoryImpl implements CityRepository {
 				"tz", "tz"
 		                                          );
 
-		String tsvContent = fileReader.read(DATA_FILE);
+		String tsvContent = fileReader.read(DATA_FILE)
+				.orElseThrow(() -> new IllegalStateException("File not found or unreadable: " + DATA_FILE));
+
 		List<City> data = tsvParser.parse(tsvContent, headerToField, City.class);
 
 		log.info("Loaded {} cities", data.size());
