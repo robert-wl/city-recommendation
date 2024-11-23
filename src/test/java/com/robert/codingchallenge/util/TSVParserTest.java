@@ -82,7 +82,7 @@ public class TSVParserTest {
 
 	@Test
 	void testParse_invalidData() {
-		String tsv = "name\talt_name\tlat\tlong\tcountry\ttz\n" +
+		String tsv = "t\t\t\t\t\tcountry\ttz\n" +
 				"London\t\t51.5074\t-0.1278\tUnited Kingdom\tEurope/London\n" +
 				"Paris\tpar,ris,pa,ri,s\t48.8566\t2.3522\tFrance\tEurope/Paris\n";
 
