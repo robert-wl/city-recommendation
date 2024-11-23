@@ -2,6 +2,7 @@ package com.robert.codingchallenge.repository.impl;
 
 import com.robert.codingchallenge.model.data.City;
 import com.robert.codingchallenge.repository.CityRepository;
+import com.robert.codingchallenge.util.FileReader;
 import com.robert.codingchallenge.util.TSVParser;
 import com.robert.codingchallenge.util.search.SearchMatch;
 import com.robert.codingchallenge.util.search.impl.CityFuzzySearch;
@@ -20,6 +21,7 @@ public class CityRepositoryImpl implements CityRepository {
 	private final String DATA_FILE = "cities_canada-usa.tsv";
 	private final CityFuzzySearch cities;
 	private final TSVParser tsvParser;
+	private final FileReader fileReader;
 
 
 	@PostConstruct
@@ -37,7 +39,8 @@ public class CityRepositoryImpl implements CityRepository {
 				"tz", "tz"
 		                                          );
 
-		List<City> data = tsvParser.parse(DATA_FILE, headerToField, City.class);
+		String tsvContent = fileReader.read(DATA_FILE);
+		List<City> data = tsvParser.parse(tsvContent, headerToField, City.class);
 
 		log.info("Loaded {} cities", data.size());
 

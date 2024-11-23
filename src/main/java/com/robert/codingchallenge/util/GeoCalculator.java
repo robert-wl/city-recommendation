@@ -4,7 +4,6 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class GeoCalculator {
-
 	private static final double EARTH_RADIUS_KM = 6371.0;
 	private static final double MAX_DISTANCE_KM = 1000.0;
 

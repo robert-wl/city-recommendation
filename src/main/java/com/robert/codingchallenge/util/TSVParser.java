@@ -3,9 +3,6 @@ package com.robert.codingchallenge.util;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.function.Function;
@@ -41,7 +38,7 @@ public class TSVParser {
 
 		var parser = Optional.ofNullable(PARSERS.get(type))
 				.orElseThrow(() -> new IllegalArgumentException("Unsupported type: " + type));
-		
+
 
 		return type.cast(parser.apply(value));
 	}
@@ -49,18 +46,19 @@ public class TSVParser {
 	public <T> List<T> parse(String tsv, Map<String, String> headerToField, Class<T> clazz) {
 		List<T> list = new ArrayList<>();
 
-		try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream(tsv);
-		     BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))
-		) {
-			String line = reader.readLine();
+		List<String> lines = new ArrayList<>(List.of(tsv.split("\n")));
 
-			Map<Integer, String> indexToHeader = getIndexToHeader(line);
+		String headerLine = lines.get(0);
+		lines.remove(0);
 
-			List<Integer> takeIndex = indexToHeader.keySet().stream()
-					.filter(index -> headerToField.containsKey(indexToHeader.get(index)))
-					.toList();
+		Map<Integer, String> indexToHeader = getIndexToHeader(headerLine);
 
-			while ((line = reader.readLine()) != null) {
+		List<Integer> takeIndex = indexToHeader.keySet().stream()
+				.filter(index -> headerToField.containsKey(indexToHeader.get(index)))
+				.toList();
+
+		try {
+			for (String line : lines) {
 				String[] values = line.split("\t");
 				T obj = clazz.getDeclaredConstructor().newInstance();
 
@@ -77,7 +75,6 @@ public class TSVParser {
 
 				list.add(obj);
 			}
-
 			return list;
 		} catch (Exception e) {
 			log.error("Error parsing TSV file", e);
