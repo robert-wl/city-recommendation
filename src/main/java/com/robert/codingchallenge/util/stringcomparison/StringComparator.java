@@ -19,7 +19,10 @@ public class StringComparator {
 
 	private double compareLevenshtein(String s1, String s2) {
 		LevenshteinDistance levenshteinDistance = new LevenshteinDistance();
-		return levenshteinDistance.apply(s1, s2);
+		int distance = levenshteinDistance.apply(s1, s2);
+		int maxLength = Math.min(s1.length(), s2.length());
+
+		return 1 - (double) distance / maxLength;
 	}
 
 	private double compareJaroWinkler(String s1, String s2) {
@@ -29,6 +32,8 @@ public class StringComparator {
 
 	private double compareJaccard(String s1, String s2) {
 		JaccardDistance jaccardDistance = new JaccardDistance();
-		return jaccardDistance.apply(s1, s2);
+		double distance = jaccardDistance.apply(s1, s2);
+
+		return 1 - distance;
 	}
 }
