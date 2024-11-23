@@ -2,6 +2,7 @@ package com.robert.codingchallenge.config;
 
 import com.robert.codingchallenge.model.dto.response.ErrorResponseDTO;
 import io.swagger.v3.oas.annotations.Hidden;
+import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +22,16 @@ public class GlobalExceptionAdvice {
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	@ExceptionHandler(IllegalArgumentException.class)
 	public ResponseEntity<ErrorResponseDTO> handleIllegalArgument(IllegalArgumentException ex) {
+		ErrorResponseDTO error = new ErrorResponseDTO(
+				HttpStatus.BAD_REQUEST.value(),
+				HttpStatus.BAD_REQUEST.getReasonPhrase(),
+				Map.of("error", ex.getMessage())
+		);
+		return ResponseEntity.badRequest().body(error);
+	}
+	
+	@ExceptionHandler(ConstraintViolationException.class)
+	public ResponseEntity<ErrorResponseDTO> handleIllegalArgument(ConstraintViolationException ex) {
 		ErrorResponseDTO error = new ErrorResponseDTO(
 				HttpStatus.BAD_REQUEST.value(),
 				HttpStatus.BAD_REQUEST.getReasonPhrase(),
