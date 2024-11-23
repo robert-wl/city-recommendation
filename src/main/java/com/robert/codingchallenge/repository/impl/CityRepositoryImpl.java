@@ -36,7 +36,7 @@ public class CityRepositoryImpl implements CityRepository {
 				"country", "country",
 				"tz", "tz"
 		                                          );
-
+		
 		List<City> data = tsvParser.parse(DATA_FILE, headerToField, City.class);
 
 		log.info("Loaded {} cities", data.size());

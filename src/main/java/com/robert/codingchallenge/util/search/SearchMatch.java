@@ -1,7 +1,13 @@
 package com.robert.codingchallenge.util.search;
 
-public record SearchMatch<T>(
-		T data,
-		Double score
-) {
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+@AllArgsConstructor
+public class SearchMatch<T> {
+	T data;
+	Double score;
 }
