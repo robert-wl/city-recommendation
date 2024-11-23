@@ -71,7 +71,6 @@ public class CityFuzzySearchTest {
 
 		List<SearchMatch<City>> results = cityFuzzySearch.search("London");
 
-		// Assert
 		Assertions.assertEquals(1, results.size(), "Expected 1 search result");
 		SearchMatch<City> match = results.get(0);
 		Assertions.assertEquals(city1, match.getData(), "Expected the correct city match");

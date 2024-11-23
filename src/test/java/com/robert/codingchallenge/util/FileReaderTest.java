@@ -20,13 +20,13 @@ public class FileReaderTest {
 
 		Optional<String> result = fileReader.read("test.txt");
 
-		Assertions.assertTrue(result.isPresent());
+		Assertions.assertTrue(result.isPresent(), "FileReader should return content for valid file");
 	}
 
 	@Test
 	void testRead_invalidTSV_shouldReturnEmpty() {
 		Optional<String> data = fileReader.read("test-invalid.txt");
 
-		Assertions.assertFalse(data.isPresent());
+		Assertions.assertFalse(data.isPresent(), "FileReader should return empty Optional for invalid file");
 	}
 }

@@ -32,14 +32,14 @@ public class TSVParserTest {
 
 		List<City> cities = tsvParser.parse(tsv, headerToField, City.class);
 
-		Assertions.assertNotEquals(0, cities.size());
-		Assertions.assertEquals(2, cities.size());
-		Assertions.assertEquals("London", cities.get(0).getName());
-		Assertions.assertEquals(List.of("lon", "don", "lo", "nd", "on"), cities.get(0).getAltNames());
-		Assertions.assertEquals(51.5074, cities.get(0).getLatitude());
-		Assertions.assertEquals(-0.1278, cities.get(0).getLongitude());
-		Assertions.assertEquals("United Kingdom", cities.get(0).getCountry());
-		Assertions.assertEquals("Europe/London", cities.get(0).getTz());
+		Assertions.assertNotEquals(0, cities.size(), "Cities should not be empty");
+		Assertions.assertEquals(2, cities.size(), "There should be 2 cities");
+		Assertions.assertEquals("London", cities.get(0).getName(), "First city should be London");
+		Assertions.assertEquals(List.of("lon", "don", "lo", "nd", "on"), cities.get(0).getAltNames(), "London should have alt names");
+		Assertions.assertEquals(51.5074, cities.get(0).getLatitude(), 0.0001, "London should have latitude 51.5074");
+		Assertions.assertEquals(-0.1278, cities.get(0).getLongitude(), 0.0001, "London should have longitude -0.1278");
+		Assertions.assertEquals("United Kingdom", cities.get(0).getCountry(), "London should be in United Kingdom");
+		Assertions.assertEquals("Europe/London", cities.get(0).getTz(), "London should be in Europe/London timezone");
 	}
 
 	@Test
@@ -57,7 +57,7 @@ public class TSVParserTest {
 
 		List<City> cities = tsvParser.parse(tsv, headerToField, City.class);
 
-		Assertions.assertEquals(0, cities.size());
+		Assertions.assertEquals(0, cities.size(), "Cities should be empty");
 	}
 
 	@Test
@@ -77,7 +77,7 @@ public class TSVParserTest {
 
 		List<City> cities = tsvParser.parse(tsv, headerToField, City.class);
 
-		Assertions.assertTrue(cities.isEmpty());
+		Assertions.assertTrue(cities.isEmpty(), "Cities should be empty");
 	}
 
 	@Test
@@ -97,7 +97,7 @@ public class TSVParserTest {
 
 		List<City> cities = tsvParser.parse(tsv, headerToField, City.class);
 
-		Assertions.assertTrue(cities.isEmpty());
+		Assertions.assertTrue(cities.isEmpty(), "Cities should be empty");
 	}
 
 	@Test
@@ -117,13 +117,13 @@ public class TSVParserTest {
 
 		List<City> cities = tsvParser.parse(tsv, headerToField, City.class);
 
-		Assertions.assertNotEquals(0, cities.size());
-		Assertions.assertEquals(2, cities.size());
-		Assertions.assertEquals("London", cities.get(0).getName());
-		Assertions.assertNull(cities.get(0).getAltNames());
-		Assertions.assertNull(cities.get(0).getLatitude());
-		Assertions.assertNull(cities.get(0).getLongitude());
-		Assertions.assertEquals("United Kingdom", cities.get(0).getCountry());
-		Assertions.assertEquals("Europe/London", cities.get(0).getTz());
+		Assertions.assertNotEquals(0, cities.size(), "Cities should not be empty");
+		Assertions.assertEquals(2, cities.size(), "There should be 2 cities");
+		Assertions.assertEquals("London", cities.get(0).getName(), "First city should be London");
+		Assertions.assertNull(cities.get(0).getAltNames(), "London should not have alt names");
+		Assertions.assertNull(cities.get(0).getLatitude(), "London should not have latitude");
+		Assertions.assertNull(cities.get(0).getLongitude(), "London should not have longitude");
+		Assertions.assertEquals("United Kingdom", cities.get(0).getCountry(), "London should be in United Kingdom");
+		Assertions.assertEquals("Europe/London", cities.get(0).getTz(), "London should be in Europe/London timezone");
 	}
 }

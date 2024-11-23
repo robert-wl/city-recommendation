@@ -18,7 +18,7 @@ public class StringComparatorTest {
 
 		double score = stringComparator.compare(s1, s2, StringAlgorithm.LEVENSHTEIN);
 
-		Assertions.assertEquals(1.0, score, 0.0001);
+		Assertions.assertEquals(1.0, score, 0.0001, "Score should be 1.0");
 	}
 
 	@Test
@@ -28,7 +28,7 @@ public class StringComparatorTest {
 
 		double score = stringComparator.compare(s1, s2, StringAlgorithm.LEVENSHTEIN);
 
-		Assertions.assertTrue(score < 1.0);
+		Assertions.assertTrue(score < 1.0, "Score should be less than 1.0");
 	}
 
 	@Test
@@ -38,7 +38,7 @@ public class StringComparatorTest {
 
 		double score = stringComparator.compare(s1, s2, StringAlgorithm.LEVENSHTEIN);
 
-		Assertions.assertTrue(score > 0.4);
+		Assertions.assertTrue(score > 0.4, "Score should be greater than 0.4");
 	}
 
 	@Test
@@ -48,7 +48,7 @@ public class StringComparatorTest {
 
 		double score = stringComparator.compare(s1, s2, StringAlgorithm.JARO_WINKLER);
 
-		Assertions.assertEquals(1.0, score, 0.0001);
+		Assertions.assertEquals(1.0, score, 0.0001, "Score should be 1.0");
 	}
 
 	@Test
@@ -58,7 +58,7 @@ public class StringComparatorTest {
 
 		double score = stringComparator.compare(s1, s2, StringAlgorithm.JARO_WINKLER);
 
-		Assertions.assertTrue(score < 1.0);
+		Assertions.assertTrue(score < 1.0, "Score should be less than 1.0");
 	}
 
 	@Test
@@ -68,7 +68,7 @@ public class StringComparatorTest {
 
 		double score = stringComparator.compare(s1, s2, StringAlgorithm.JARO_WINKLER);
 
-		Assertions.assertTrue(score > 0.4);
+		Assertions.assertTrue(score > 0.4, "Score should be greater than 0.4");
 	}
 
 	@Test
@@ -78,7 +78,7 @@ public class StringComparatorTest {
 
 		double score = stringComparator.compare(s1, s2, StringAlgorithm.JACCARD);
 
-		Assertions.assertEquals(1.0, score, 0.0001);
+		Assertions.assertEquals(1.0, score, 0.0001, "Score should be 1.0");
 	}
 
 	@Test
@@ -88,7 +88,7 @@ public class StringComparatorTest {
 
 		double score = stringComparator.compare(s1, s2, StringAlgorithm.JACCARD);
 
-		Assertions.assertTrue(score < 1.0);
+		Assertions.assertTrue(score < 1.0, "Score should be less than 1.0");
 	}
 
 	@Test
@@ -98,6 +98,6 @@ public class StringComparatorTest {
 
 		double score = stringComparator.compare(s1, s2, StringAlgorithm.JACCARD);
 
-		Assertions.assertTrue(score > 0.4);
+		Assertions.assertTrue(score > 0.4, "Score should be greater than 0.4");
 	}
 }
