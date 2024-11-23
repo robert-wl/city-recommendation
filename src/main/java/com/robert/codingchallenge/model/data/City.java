@@ -16,6 +16,8 @@ import java.util.List;
 public class City {
 	private String name;
 	private List<String> altNames;
+	private String country;
+	private String tz;
 	private Float latitude;
 	private Float longitude;
 }

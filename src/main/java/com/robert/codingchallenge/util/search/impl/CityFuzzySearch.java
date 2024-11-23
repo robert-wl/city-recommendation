@@ -4,8 +4,9 @@ import com.robert.codingchallenge.model.data.City;
 import com.robert.codingchallenge.util.gramindex.impl.CityIndex;
 import com.robert.codingchallenge.util.search.FuzzySearch;
 import com.robert.codingchallenge.util.search.SearchMatch;
+import com.robert.codingchallenge.util.stringcomparison.StringAlgorithm;
+import com.robert.codingchallenge.util.stringcomparison.StringComparator;
 import lombok.AllArgsConstructor;
-import org.apache.commons.text.similarity.JaroWinklerDistance;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -15,8 +16,9 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @Component
 public class CityFuzzySearch implements FuzzySearch<City> {
+	private final double SCORE_THRESHOLD = 0.5;
 	private final CityIndex index;
-	private final JaroWinklerDistance distance;
+	private final StringComparator comparator;
 
 	@Override
 	public void add(City data) {
@@ -28,8 +30,8 @@ public class CityFuzzySearch implements FuzzySearch<City> {
 		Set<City> result = index.search(query);
 
 		return result.stream()
-				.map(c -> new SearchMatch<>(c, 1 - distance.apply(c.getName(), query)))
-				.filter(m -> m.score() > 0.5)
+				.map(c -> new SearchMatch<>(c, comparator.compare(c.getName().toLowerCase(), query.toLowerCase(), StringAlgorithm.LEVENSHTEIN)))
+				.filter(m -> m.score() >= SCORE_THRESHOLD)
 				.sorted((m1, m2) -> m2.score().compareTo(m1.score()))
 				.collect(Collectors.toList());
 	}

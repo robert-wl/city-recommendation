@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class StringComparator {
+	private final double SCORE_RATIO = 0.6;
 
 	public double compare(String s1, String s2, StringAlgorithm algorithm) {
 		return switch (algorithm) {
@@ -17,23 +18,40 @@ public class StringComparator {
 		};
 	}
 
-	private double compareLevenshtein(String s1, String s2) {
+	private double compareLevenshtein(String s, String q) {
 		LevenshteinDistance levenshteinDistance = new LevenshteinDistance();
-		int distance = levenshteinDistance.apply(s1, s2);
-		int maxLength = Math.min(s1.length(), s2.length());
+		int distance = levenshteinDistance.apply(s, q);
+		int maxLength = Math.max(s.length(), q.length());
 
-		return 1 - (double) distance / maxLength;
+		double baseScore = (1 - (double) distance / maxLength) * SCORE_RATIO;
+
+		if (s.toLowerCase().startsWith(q.toLowerCase())) {
+			return baseScore + (1 - SCORE_RATIO);
+		}
+
+		return baseScore;
 	}
 
-	private double compareJaroWinkler(String s1, String s2) {
+	private double compareJaroWinkler(String s, String q) {
 		JaroWinklerDistance jaroWinklerDistance = new JaroWinklerDistance();
-		return jaroWinklerDistance.apply(s1, s2);
+		double baseScore = jaroWinklerDistance.apply(s, q) * SCORE_RATIO;
+
+
+		if (s.toLowerCase().startsWith(q.toLowerCase())) {
+			return baseScore + (1 - SCORE_RATIO);
+		}
+
+		return baseScore;
 	}
 
-	private double compareJaccard(String s1, String s2) {
+	private double compareJaccard(String s, String q) {
 		JaccardDistance jaccardDistance = new JaccardDistance();
-		double distance = jaccardDistance.apply(s1, s2);
+		double baseScore = (1 - jaccardDistance.apply(s, q)) * SCORE_RATIO;
 
-		return 1 - distance;
+		if (s.toLowerCase().startsWith(q.toLowerCase())) {
+			return baseScore + (1 - SCORE_RATIO);
+		}
+
+		return baseScore;
 	}
 }

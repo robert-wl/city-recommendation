@@ -32,7 +32,9 @@ public class CityRepositoryImpl implements CityRepository {
 				"name", "name",
 				"alt_name", "altNames",
 				"lat", "latitude",
-				"long", "longitude"
+				"long", "longitude",
+				"country", "country",
+				"tz", "tz"
 		                                          );
 
 		List<City> data = tsvParser.parse(DATA_FILE, headerToField, City.class);
