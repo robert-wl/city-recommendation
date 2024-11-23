@@ -7,6 +7,7 @@ import com.robert.codingchallenge.util.GeoCalculator;
 import com.robert.codingchallenge.util.search.SearchMatch;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,6 +22,7 @@ public class CityServiceImpl implements CityService {
 
 
 	@Override
+	@Cacheable(value = "cities", key = "#query")
 	public List<SearchMatch<City>> searchCities(String query) {
 		return cityRepository.getCitiesByName(query);
 	}
@@ -39,7 +41,7 @@ public class CityServiceImpl implements CityService {
 				city.getLatitude(), city.getLongitude(),
 				latitude, longitude
 		                                     );
-		
+
 		newScore += geoScore * scoreRatio;
 
 
@@ -47,6 +49,7 @@ public class CityServiceImpl implements CityService {
 	}
 
 	@Override
+	@Cacheable(value = "cities", key = "#query + '|' + #latitude + '|' + #longitude")
 	public List<SearchMatch<City>> searchCities(String query, Double latitude, Double longitude) {
 		if (latitude != null && longitude == null) {
 			throw new IllegalArgumentException("Longitude must be provided if latitude is provided");
@@ -56,8 +59,9 @@ public class CityServiceImpl implements CityService {
 			throw new IllegalArgumentException("Latitude must be provided if longitude is provided");
 		}
 
-		return cityRepository.getCitiesByName(query).stream()
+		return searchCities(query).stream()
 				.peek(match -> calculateScoreWithLatAndLong(match, latitude, longitude))
+				.filter(m -> m.getScore() != 0)
 				.sorted((a, b) -> Double.compare(b.getScore(), a.getScore()))
 				.collect(Collectors.toList());
 	}

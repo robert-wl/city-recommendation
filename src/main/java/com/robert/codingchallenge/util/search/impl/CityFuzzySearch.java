@@ -30,9 +30,10 @@ public class CityFuzzySearch implements FuzzySearch<City> {
 		Set<City> result = index.search(query);
 
 		return result.stream()
-				.map(c -> new SearchMatch<>(c, comparator.compare(c.getName().toLowerCase(), query.toLowerCase(), StringAlgorithm.LEVENSHTEIN)))
+				.map(c -> new SearchMatch<>(c, comparator.compare(c.getName().toLowerCase(), query.toLowerCase(), StringAlgorithm.JACCARD)))
 				.filter(m -> m.getScore() >= SCORE_THRESHOLD)
 				.peek(m -> m.setScore((m.getScore() - SCORE_THRESHOLD) / SCORE_THRESHOLD))
+				.filter(m -> m.getScore() != 0)
 				.sorted((m1, m2) -> m2.getScore().compareTo(m1.getScore()))
 				.collect(Collectors.toList());
 	}

@@ -1,13 +1,11 @@
 package com.robert.codingchallenge.config;
 
 import com.robert.codingchallenge.util.gramindex.impl.CityIndex;
-import lombok.AllArgsConstructor;
 import org.apache.commons.text.similarity.JaroWinklerDistance;
 import org.apache.commons.text.similarity.LevenshteinDistance;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-@AllArgsConstructor
 @Configuration
 public class FuzzyConfig {
 	private final int Q_SIZE = 3;
