@@ -25,7 +25,7 @@ public class CityRepositoryImpl implements CityRepository {
 
 
 	@PostConstruct
-	public void init() {
+	private void init() {
 		loadData();
 	}
 
