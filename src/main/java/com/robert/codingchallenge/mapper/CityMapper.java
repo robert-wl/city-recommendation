@@ -3,30 +3,27 @@ package com.robert.codingchallenge.mapper;
 import com.robert.codingchallenge.model.data.City;
 import com.robert.codingchallenge.model.dto.ScoredCityDTO;
 import com.robert.codingchallenge.util.search.SearchMatch;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
-import org.mapstruct.Named;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
-@Mapper(componentModel = "spring")
-public interface CityMapper {
+@Component
+public class CityMapper {
 
-	@Mappings({
-			@Mapping(target = "name", expression = "java(getNameField(city))"),
-			@Mapping(target = "latitude", expression = "java(city.getData().getLatitude())"),
-			@Mapping(target = "longitude", expression = "java(city.getData().getLongitude())"),
-			@Mapping(target = "score", expression = "java(city.getScore())"),
-
-	})
-	ScoredCityDTO toScoredCity(SearchMatch<City> city);
-
-	List<ScoredCityDTO> toScoredCities(List<SearchMatch<City>> cities);
-
-	@Named("toFormattedName")
-	default String getNameField(SearchMatch<City> citySearchMatch) {
-		City city = citySearchMatch.getData();
-		return String.format("%s, %s", city.getName(), city.getCountry());
+	public ScoredCityDTO toScoredCity(SearchMatch<City> city) {
+		return ScoredCityDTO.builder()
+				.name(city.getData().getName())
+				.latitude(city.getData().getLatitude())
+				.longitude(city.getData().getLongitude())
+				.score(city.getScore())
+				.build();
 	}
+
+	public List<ScoredCityDTO> toScoredCities(List<SearchMatch<City>> cities) {
+		return cities.stream()
+				.map(this::toScoredCity)
+				.collect(Collectors.toList());
+	}
+
 }

@@ -40,17 +40,18 @@ public class CityServiceImpl implements CityService {
 
 		final double scoreRatio = 0.7;
 
-		double newScore = city.score() * (1 - scoreRatio);
+		double newScore = city.getScore() * (1 - scoreRatio);
 
 		double geoScore = geoCalculator.score(
-				city.latitude(), city.longitude(),
+				city.getLatitude(), city.getLongitude(),
 				latitude, longitude
 		                                     );
 
 		newScore += geoScore * scoreRatio;
 
-
-		return new ScoredCityDTO(city.name(), city.latitude(), city.longitude(), newScore);
+		return city.toBuilder()
+				.score(newScore)
+				.build();
 	}
 
 	@Override
@@ -66,8 +67,8 @@ public class CityServiceImpl implements CityService {
 
 		return searchCities(query).stream()
 				.map(match -> calculateFinalScore(match, latitude, longitude))
-				.filter(m -> m.score() != 0)
-				.sorted((a, b) -> Double.compare(b.score(), a.score()))
+				.filter(m -> m.getScore() != 0)
+				.sorted((a, b) -> Double.compare(b.getScore(), a.getScore()))
 				.collect(Collectors.toList());
 	}
 }
