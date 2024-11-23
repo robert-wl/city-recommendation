@@ -8,4 +8,6 @@ import java.util.List;
 public interface CityService {
 
 	List<SearchMatch<City>> searchCities(String query);
+
+	List<SearchMatch<City>> searchCities(String query, Double latitude, Double longitude);
 }

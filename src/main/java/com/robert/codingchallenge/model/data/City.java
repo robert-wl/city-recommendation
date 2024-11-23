@@ -18,6 +18,6 @@ public class City {
 	private List<String> altNames;
 	private String country;
 	private String tz;
-	private Float latitude;
-	private Float longitude;
+	private Double latitude;
+	private Double longitude;
 }

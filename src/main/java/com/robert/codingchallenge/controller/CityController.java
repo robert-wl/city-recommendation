@@ -16,9 +16,11 @@ public class CityController {
 
 	@GetMapping("/suggestions")
 	public ResponseEntity<GetSuggestionsResponseDTO> getSuggestions(
-			@RequestParam String q
+			@RequestParam String q,
+			@RequestParam(required = false) Double latitude,
+			@RequestParam(required = false) Double longitude
 	                                                               ) {
-		var cities = cityService.searchCities(q);
+		var cities = cityService.searchCities(q, latitude, longitude);
 		GetSuggestionsResponseDTO response = new GetSuggestionsResponseDTO(cities);
 		return ResponseEntity.ok(response);
 	}
