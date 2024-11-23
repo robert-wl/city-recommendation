@@ -1,4 +1,4 @@
-package com.robert.codingchallenge.util.stringcomparison;
+package com.robert.codingchallenge.util.stringcomparator;
 
 
 import org.apache.commons.text.similarity.JaccardDistance;
@@ -34,7 +34,7 @@ public class StringComparator {
 
 	private double compareJaroWinkler(String s, String q) {
 		JaroWinklerDistance jaroWinklerDistance = new JaroWinklerDistance();
-		double baseScore = jaroWinklerDistance.apply(s, q) * SCORE_RATIO;
+		double baseScore = (1 - jaroWinklerDistance.apply(s, q)) * SCORE_RATIO;
 
 
 		if (s.toLowerCase().startsWith(q.toLowerCase())) {

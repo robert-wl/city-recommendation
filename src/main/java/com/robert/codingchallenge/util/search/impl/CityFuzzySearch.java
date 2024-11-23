@@ -4,8 +4,8 @@ import com.robert.codingchallenge.model.data.City;
 import com.robert.codingchallenge.util.gramindex.impl.CityIndex;
 import com.robert.codingchallenge.util.search.FuzzySearch;
 import com.robert.codingchallenge.util.search.SearchMatch;
-import com.robert.codingchallenge.util.stringcomparison.StringAlgorithm;
-import com.robert.codingchallenge.util.stringcomparison.StringComparator;
+import com.robert.codingchallenge.util.stringcomparator.StringAlgorithm;
+import com.robert.codingchallenge.util.stringcomparator.StringComparator;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 

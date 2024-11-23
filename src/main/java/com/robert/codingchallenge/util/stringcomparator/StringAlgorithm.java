@@ -1,4 +1,4 @@
-package com.robert.codingchallenge.util.stringcomparison;
+package com.robert.codingchallenge.util.stringcomparator;
 
 public enum StringAlgorithm {
 	LEVENSHTEIN("Levenshtein"),
