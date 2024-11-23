@@ -1,7 +1,7 @@
 package com.robert.codingchallenge.repository;
 
 import com.robert.codingchallenge.model.data.City;
-import com.robert.codingchallenge.util.search.SearchMatch;
+import com.robert.codingchallenge.util.fuzzysearch.SearchMatch;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

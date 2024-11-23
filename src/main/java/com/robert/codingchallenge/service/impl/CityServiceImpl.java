@@ -6,7 +6,7 @@ import com.robert.codingchallenge.model.dto.ScoredCityDTO;
 import com.robert.codingchallenge.repository.CityRepository;
 import com.robert.codingchallenge.service.CityService;
 import com.robert.codingchallenge.util.GeoCalculator;
-import com.robert.codingchallenge.util.search.SearchMatch;
+import com.robert.codingchallenge.util.fuzzysearch.SearchMatch;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;

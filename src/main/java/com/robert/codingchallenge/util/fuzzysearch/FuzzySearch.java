@@ -1,4 +1,4 @@
-package com.robert.codingchallenge.util.search;
+package com.robert.codingchallenge.util.fuzzysearch;
 
 import java.util.List;
 

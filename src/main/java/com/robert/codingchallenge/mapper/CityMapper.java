@@ -2,7 +2,7 @@ package com.robert.codingchallenge.mapper;
 
 import com.robert.codingchallenge.model.data.City;
 import com.robert.codingchallenge.model.dto.ScoredCityDTO;
-import com.robert.codingchallenge.util.search.SearchMatch;
+import com.robert.codingchallenge.util.fuzzysearch.SearchMatch;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
