@@ -6,7 +6,6 @@ import com.robert.codingchallenge.util.gramindex.impl.CityIndex;
 import com.robert.codingchallenge.util.stringcomparator.StringAlgorithm;
 import com.robert.codingchallenge.util.stringcomparator.StringComparator;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -28,29 +27,6 @@ public class CityFuzzySearchTest {
 	@Mock
 	private StringComparator stringComparator;
 
-	private City city1;
-	private City city2;
-
-	@BeforeEach
-	void setUp() {
-		city1 = City.builder()
-				.name("London")
-				.altNames(List.of("Londres"))
-				.country("UK")
-				.tz("GMT")
-				.latitude(51.5074)
-				.longitude(-0.1278)
-				.build();
-
-		city2 = City.builder()
-				.name("Paris")
-				.altNames(List.of("París"))
-				.country("France")
-				.tz("CET")
-				.latitude(48.8566)
-				.longitude(2.3522)
-				.build();
-	}
 
 	@Test
 	void testSearch_noMatches() {
@@ -64,25 +40,36 @@ public class CityFuzzySearchTest {
 	@Test
 	void testSearch_withMatch() {
 		Set<City> cities = new HashSet<>();
-		cities.add(city1);
+
+		City mockCity1 = Mockito.mock(City.class);
+		cities.add(mockCity1);
+		
 		Mockito.when(cityIndex.search("London")).thenReturn(cities);
-		Mockito.when(stringComparator.compare(city1.getName().toLowerCase(), "London".toLowerCase(), StringAlgorithm.JACCARD))
+
+
+		Mockito.when(mockCity1.getName()).thenReturn("London");
+
+		Mockito.when(stringComparator.compare(mockCity1.getName().toLowerCase(), "London".toLowerCase(), StringAlgorithm.JACCARD))
 				.thenReturn(1.0);
 
 		List<SearchMatch<City>> results = cityFuzzySearch.search("London");
 
 		Assertions.assertEquals(1, results.size(), "Expected 1 search result");
 		SearchMatch<City> match = results.get(0);
-		Assertions.assertEquals(city1, match.getData(), "Expected the correct city match");
+		Assertions.assertEquals(mockCity1, match.getData(), "Expected the correct city match");
 		Assertions.assertEquals(1.0, match.getScore(), 0.01, "Expected score to be 1.0 for perfect match");
 	}
 
 	@Test
 	void testSearch_withLowScore() {
 		Set<City> cities = new HashSet<>();
-		cities.add(city1);
+
+		City mockCity1 = Mockito.mock(City.class);
+		Mockito.when(mockCity1.getName()).thenReturn("London");
+
+		cities.add(mockCity1);
 		Mockito.when(cityIndex.search("London")).thenReturn(cities);
-		Mockito.when(stringComparator.compare(city1.getName().toLowerCase(), "London".toLowerCase(), StringAlgorithm.JACCARD))
+		Mockito.when(stringComparator.compare(mockCity1.getName().toLowerCase(), "London".toLowerCase(), StringAlgorithm.JACCARD))
 				.thenReturn(0.4);
 
 		List<SearchMatch<City>> results = cityFuzzySearch.search("London");
@@ -93,31 +80,45 @@ public class CityFuzzySearchTest {
 	@Test
 	void testSearch_withFilteredScore() {
 		Set<City> cities = new HashSet<>();
-		cities.add(city1);
-		cities.add(city2);
+
+		City mockCity1 = Mockito.mock(City.class);
+		Mockito.when(mockCity1.getName()).thenReturn("London");
+
+		City mockCity2 = Mockito.mock(City.class);
+		Mockito.when(mockCity2.getName()).thenReturn("Londres");
+
+		cities.add(mockCity1);
+		cities.add(mockCity2);
 
 		Mockito.when(cityIndex.search("Lon")).thenReturn(cities);
-		Mockito.when(stringComparator.compare(city1.getName().toLowerCase(), "Lon".toLowerCase(), StringAlgorithm.JACCARD))
+		Mockito.when(stringComparator.compare(mockCity1.getName().toLowerCase(), "Lon".toLowerCase(), StringAlgorithm.JACCARD))
 				.thenReturn(0.7);
-		Mockito.when(stringComparator.compare(city2.getName().toLowerCase(), "Lon".toLowerCase(), StringAlgorithm.JACCARD))
+		Mockito.when(stringComparator.compare(mockCity2.getName().toLowerCase(), "Lon".toLowerCase(), StringAlgorithm.JACCARD))
 				.thenReturn(0.4);
 
 		List<SearchMatch<City>> results = cityFuzzySearch.search("Lon");
 
 		Assertions.assertEquals(1, results.size(), "Expected 1 search result");
-		Assertions.assertEquals(city1, results.get(0).getData(), "Expected only one valid result (London)");
+		Assertions.assertEquals(mockCity1, results.get(0).getData(), "Expected only one valid result (London)");
 	}
 
 	@Test
 	void testSearch_withMultipleMatches() {
 		Set<City> cities = new HashSet<>();
-		cities.add(city1);
-		cities.add(city2);
+
+		City mockCity1 = Mockito.mock(City.class);
+		Mockito.when(mockCity1.getName()).thenReturn("London");
+
+		City mockCity2 = Mockito.mock(City.class);
+		Mockito.when(mockCity2.getName()).thenReturn("Londres");
+
+		cities.add(mockCity1);
+		cities.add(mockCity2);
 
 		Mockito.when(cityIndex.search("Lon")).thenReturn(cities);
-		Mockito.when(stringComparator.compare(city1.getName().toLowerCase(), "Lon".toLowerCase(), StringAlgorithm.JACCARD))
+		Mockito.when(stringComparator.compare(mockCity1.getName().toLowerCase(), "Lon".toLowerCase(), StringAlgorithm.JACCARD))
 				.thenReturn(0.9);
-		Mockito.when(stringComparator.compare(city2.getName().toLowerCase(), "Lon".toLowerCase(), StringAlgorithm.JACCARD))
+		Mockito.when(stringComparator.compare(mockCity2.getName().toLowerCase(), "Lon".toLowerCase(), StringAlgorithm.JACCARD))
 				.thenReturn(0.7);
 
 		List<SearchMatch<City>> results = cityFuzzySearch.search("Lon");
