@@ -43,8 +43,19 @@ dependencies {
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    testImplementation "org.mockito:mockito-inline:+"
 }
 
 tasks.named('test') {
     useJUnitPlatform()
+
+    doLast {
+        def mockitoCore = configurations.runtimeClasspath.find { it.name.contains('mockito-inline') }
+
+        if (mockitoCore != null) {
+            def mockitoJarPath = mockitoCore.absolutePath
+
+            jvmArgs "-Xshare:off", "-javaagent:${mockitoJarPath}"
+        }
+    }
 }

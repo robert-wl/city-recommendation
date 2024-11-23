@@ -36,7 +36,7 @@ public class CityControllerTest {
 		Mockito.when(cityService.searchCities("testQuery", 45.0, 90.0)).thenReturn(cityList);
 
 
-		mockMvc.perform(MockMvcRequestBuilders.get("/api/city/suggestions")
+		mockMvc.perform(MockMvcRequestBuilders.get("/v1/suggestions")
 				                .param("q", "testQuery")
 				                .param("latitude", "45.0")
 				                .param("longitude", "90.0"))
@@ -50,7 +50,7 @@ public class CityControllerTest {
 
 	@Test
 	void testGetSuggestions_withInvalidLatitude() throws Exception {
-		mockMvc.perform(MockMvcRequestBuilders.get("/api/city/suggestions")
+		mockMvc.perform(MockMvcRequestBuilders.get("/v1/suggestions")
 				                .param("q", "testQuery")
 				                .param("latitude", "100.0")
 				                .param("longitude", "90.0"))
@@ -60,7 +60,7 @@ public class CityControllerTest {
 
 	@Test
 	void testGetSuggestions_withInvalidLongitude() throws Exception {
-		mockMvc.perform(MockMvcRequestBuilders.get("/api/city/suggestions")
+		mockMvc.perform(MockMvcRequestBuilders.get("/v1/suggestions")
 				                .param("q", "testQuery")
 				                .param("latitude", "45.0")
 				                .param("longitude", "200.0"))
@@ -77,7 +77,7 @@ public class CityControllerTest {
 		var cityList = List.of(mockCity1, mockCity2);
 		Mockito.when(cityService.searchCities("testQuery", null, null)).thenReturn(cityList);
 
-		mockMvc.perform(MockMvcRequestBuilders.get("/api/city/suggestions")
+		mockMvc.perform(MockMvcRequestBuilders.get("/v1/suggestions")
 				                .param("q", "testQuery"))
 				.andExpect(MockMvcResultMatchers.status().isOk())
 				.andExpect(MockMvcResultMatchers.jsonPath("$.suggestions").isArray())
