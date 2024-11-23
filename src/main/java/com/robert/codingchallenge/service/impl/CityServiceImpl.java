@@ -2,7 +2,7 @@ package com.robert.codingchallenge.service.impl;
 
 import com.robert.codingchallenge.mapper.CityMapper;
 import com.robert.codingchallenge.model.data.City;
-import com.robert.codingchallenge.model.data.ScoredCity;
+import com.robert.codingchallenge.model.dto.ScoredCityDTO;
 import com.robert.codingchallenge.repository.CityRepository;
 import com.robert.codingchallenge.service.CityService;
 import com.robert.codingchallenge.util.GeoCalculator;
@@ -27,13 +27,13 @@ public class CityServiceImpl implements CityService {
 
 	@Override
 	@Cacheable(value = "cities", key = "#query")
-	public List<ScoredCity> searchCities(String query) {
+	public List<ScoredCityDTO> searchCities(String query) {
 		List<SearchMatch<City>> cities = cityRepository.getCitiesByName(query);
 
 		return cityMapper.toScoredCities(cities);
 	}
 
-	private ScoredCity calculateScoreWithLatAndLong(ScoredCity city, Double latitude, Double longitude) {
+	private ScoredCityDTO calculateFinalScore(ScoredCityDTO city, Double latitude, Double longitude) {
 		if (latitude == null || longitude == null) {
 			return city;
 		}
@@ -50,12 +50,12 @@ public class CityServiceImpl implements CityService {
 		newScore += geoScore * scoreRatio;
 
 
-		return new ScoredCity(city.name(), city.latitude(), city.longitude(), newScore);
+		return new ScoredCityDTO(city.name(), city.latitude(), city.longitude(), newScore);
 	}
 
 	@Override
 	@Cacheable(value = "cities", key = "#query + '|' + #latitude + '|' + #longitude")
-	public List<ScoredCity> searchCities(String query, Double latitude, Double longitude) {
+	public List<ScoredCityDTO> searchCities(String query, Double latitude, Double longitude) {
 		if (latitude != null && longitude == null) {
 			throw new IllegalArgumentException("Longitude must be provided if latitude is provided");
 		}
@@ -65,7 +65,7 @@ public class CityServiceImpl implements CityService {
 		}
 
 		return searchCities(query).stream()
-				.map(match -> calculateScoreWithLatAndLong(match, latitude, longitude))
+				.map(match -> calculateFinalScore(match, latitude, longitude))
 				.filter(m -> m.score() != 0)
 				.sorted((a, b) -> Double.compare(b.score(), a.score()))
 				.collect(Collectors.toList());

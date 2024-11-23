@@ -1,7 +1,7 @@
 package com.robert.codingchallenge.mapper;
 
 import com.robert.codingchallenge.model.data.City;
-import com.robert.codingchallenge.model.data.ScoredCity;
+import com.robert.codingchallenge.model.dto.ScoredCityDTO;
 import com.robert.codingchallenge.util.search.SearchMatch;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -20,9 +20,9 @@ public interface CityMapper {
 			@Mapping(target = "score", expression = "java(city.getScore())"),
 
 	})
-	ScoredCity toScoredCity(SearchMatch<City> city);
+	ScoredCityDTO toScoredCity(SearchMatch<City> city);
 
-	List<ScoredCity> toScoredCities(List<SearchMatch<City>> cities);
+	List<ScoredCityDTO> toScoredCities(List<SearchMatch<City>> cities);
 
 	@Named("toFormattedName")
 	default String getNameField(SearchMatch<City> citySearchMatch) {

@@ -1,7 +1,7 @@
 package com.robert.codingchallenge.controller;
 
 
-import com.robert.codingchallenge.model.dto.GetSuggestionsResponseDTO;
+import com.robert.codingchallenge.model.dto.response.GetSuggestionsResponseDTO;
 import com.robert.codingchallenge.service.CityService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;

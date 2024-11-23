@@ -1,6 +1,6 @@
-package com.robert.codingchallenge.model.data;
+package com.robert.codingchallenge.model.dto;
 
-public record ScoredCity(
+public record ScoredCityDTO(
 		String name,
 		Double latitude,
 		Double longitude,
