@@ -1,13 +1,12 @@
 package com.robert.codingchallenge.service;
 
-import com.robert.codingchallenge.model.data.City;
-import com.robert.codingchallenge.util.search.SearchMatch;
+import com.robert.codingchallenge.model.data.ScoredCity;
 
 import java.util.List;
 
 public interface CityService {
 
-	List<SearchMatch<City>> searchCities(String query);
+	List<ScoredCity> searchCities(String query);
 
-	List<SearchMatch<City>> searchCities(String query, Double latitude, Double longitude);
+	List<ScoredCity> searchCities(String query, Double latitude, Double longitude);
 }

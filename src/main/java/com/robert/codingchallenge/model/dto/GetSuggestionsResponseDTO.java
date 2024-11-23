@@ -1,11 +1,10 @@
 package com.robert.codingchallenge.model.dto;
 
-import com.robert.codingchallenge.model.data.City;
-import com.robert.codingchallenge.util.search.SearchMatch;
+import com.robert.codingchallenge.model.data.ScoredCity;
 
 import java.util.List;
 
 public record GetSuggestionsResponseDTO(
-		List<SearchMatch<City>> suggestions
+		List<ScoredCity> suggestions
 ) {
 }

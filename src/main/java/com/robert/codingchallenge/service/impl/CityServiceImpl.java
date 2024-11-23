@@ -1,6 +1,8 @@
 package com.robert.codingchallenge.service.impl;
 
+import com.robert.codingchallenge.mapper.CityMapper;
 import com.robert.codingchallenge.model.data.City;
+import com.robert.codingchallenge.model.data.ScoredCity;
 import com.robert.codingchallenge.repository.CityRepository;
 import com.robert.codingchallenge.service.CityService;
 import com.robert.codingchallenge.util.GeoCalculator;
@@ -18,39 +20,42 @@ import java.util.stream.Collectors;
 @Service
 public class CityServiceImpl implements CityService {
 	private final CityRepository cityRepository;
+
 	private final GeoCalculator geoCalculator;
 
+	private final CityMapper cityMapper;
 
 	@Override
 	@Cacheable(value = "cities", key = "#query")
-	public List<SearchMatch<City>> searchCities(String query) {
-		return cityRepository.getCitiesByName(query);
+	public List<ScoredCity> searchCities(String query) {
+		List<SearchMatch<City>> cities = cityRepository.getCitiesByName(query);
+
+		return cityMapper.toScoredCities(cities);
 	}
 
-	private void calculateScoreWithLatAndLong(SearchMatch<City> cityMatch, Double latitude, Double longitude) {
+	private ScoredCity calculateScoreWithLatAndLong(ScoredCity city, Double latitude, Double longitude) {
 		if (latitude == null || longitude == null) {
-			return;
+			return city;
 		}
 
 		final double scoreRatio = 0.7;
 
-		double newScore = cityMatch.getScore() * (1 - scoreRatio);
+		double newScore = city.score() * (1 - scoreRatio);
 
-		City city = cityMatch.getData();
 		double geoScore = geoCalculator.score(
-				city.getLatitude(), city.getLongitude(),
+				city.latitude(), city.longitude(),
 				latitude, longitude
 		                                     );
 
 		newScore += geoScore * scoreRatio;
 
 
-		cityMatch.setScore(newScore);
+		return new ScoredCity(city.name(), city.latitude(), city.longitude(), newScore);
 	}
 
 	@Override
 	@Cacheable(value = "cities", key = "#query + '|' + #latitude + '|' + #longitude")
-	public List<SearchMatch<City>> searchCities(String query, Double latitude, Double longitude) {
+	public List<ScoredCity> searchCities(String query, Double latitude, Double longitude) {
 		if (latitude != null && longitude == null) {
 			throw new IllegalArgumentException("Longitude must be provided if latitude is provided");
 		}
@@ -60,9 +65,9 @@ public class CityServiceImpl implements CityService {
 		}
 
 		return searchCities(query).stream()
-				.peek(match -> calculateScoreWithLatAndLong(match, latitude, longitude))
-				.filter(m -> m.getScore() != 0)
-				.sorted((a, b) -> Double.compare(b.getScore(), a.getScore()))
+				.map(match -> calculateScoreWithLatAndLong(match, latitude, longitude))
+				.filter(m -> m.score() != 0)
+				.sorted((a, b) -> Double.compare(b.score(), a.score()))
 				.collect(Collectors.toList());
 	}
 }
