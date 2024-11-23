@@ -30,7 +30,10 @@ public class CityServiceImpl implements CityService {
 	public List<ScoredCityDTO> searchCities(String query) {
 		List<SearchMatch<City>> cities = cityRepository.getCitiesByName(query);
 
-		return cityMapper.toScoredCities(cities);
+		return cityMapper.toScoredCities(cities).stream()
+				.filter(m -> m.getScore() > 0)
+				.sorted((a, b) -> Double.compare(b.getScore(), a.getScore()))
+				.collect(Collectors.toList());
 	}
 
 	private ScoredCityDTO calculateFinalScore(ScoredCityDTO city, Double latitude, Double longitude) {
@@ -67,7 +70,7 @@ public class CityServiceImpl implements CityService {
 
 		return searchCities(query).stream()
 				.map(match -> calculateFinalScore(match, latitude, longitude))
-				.filter(m -> m.getScore() != 0)
+				.filter(m -> m.getScore() > 0)
 				.sorted((a, b) -> Double.compare(b.getScore(), a.getScore()))
 				.collect(Collectors.toList());
 	}
