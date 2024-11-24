@@ -24,7 +24,6 @@ public class CityRepositoryImpl implements CityRepository {
 	private final TSVParser tsvParser;
 	private final FileReader fileReader;
 
-
 	@PostConstruct
 	private void init() {
 		loadData();

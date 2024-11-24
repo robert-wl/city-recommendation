@@ -33,6 +33,7 @@ public class TSVParser {
 
 	private <T> T castValue(Class<T> type, String value) {
 		if (value == null || value.isEmpty()) {
+			log.warn("Empty value for type: {}", type);
 			return null;
 		}
 

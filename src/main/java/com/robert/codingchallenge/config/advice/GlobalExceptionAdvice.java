@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -73,16 +74,29 @@ public class GlobalExceptionAdvice {
 		);
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
 	}
-//
-//	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-//	@ExceptionHandler(Exception.class)
-//	public ResponseEntity<ErrorResponseDTO> handleGenericException(Exception ex) {
-//		log.error("An unexpected error occurred.", ex);
-//		ErrorResponseDTO error = new ErrorResponseDTO(
-//				HttpStatus.INTERNAL_SERVER_ERROR.value(),
-//				HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(),
-//				Map.of("error", "An unexpected error occurred. Please try again later.")
-//		);
-//		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
-//	}
+
+
+	@ResponseStatus(HttpStatus.NOT_FOUND)
+	@ExceptionHandler(NoResourceFoundException.class)
+	public ResponseEntity<ErrorResponseDTO> handleGenericException(NoResourceFoundException ex) {
+		String message = ex.getMessage().replace("No static resource ", "");
+		ErrorResponseDTO error = new ErrorResponseDTO(
+				HttpStatus.NOT_FOUND.value(),
+				HttpStatus.NOT_FOUND.getReasonPhrase(),
+				Map.of("error", String.format("/%s not found.", message))
+		);
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+	}
+
+	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+	@ExceptionHandler(Exception.class)
+	public ResponseEntity<ErrorResponseDTO> handleGenericException(Exception ex) {
+		log.error("An unexpected error occurred.", ex);
+		ErrorResponseDTO error = new ErrorResponseDTO(
+				HttpStatus.INTERNAL_SERVER_ERROR.value(),
+				HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(),
+				Map.of("error", "An unexpected error occurred. Please try again later.")
+		);
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+	}
 }
