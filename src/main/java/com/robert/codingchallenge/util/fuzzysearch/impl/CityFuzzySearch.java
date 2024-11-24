@@ -3,7 +3,7 @@ package com.robert.codingchallenge.util.fuzzysearch.impl;
 import com.robert.codingchallenge.model.data.City;
 import com.robert.codingchallenge.util.fuzzysearch.FuzzySearch;
 import com.robert.codingchallenge.util.fuzzysearch.SearchMatch;
-import com.robert.codingchallenge.util.gramindex.impl.CityIndex;
+import com.robert.codingchallenge.util.gramindex.QGramIndex;
 import com.robert.codingchallenge.util.stringcomparator.StringAlgorithm;
 import com.robert.codingchallenge.util.stringcomparator.StringComparator;
 import lombok.AllArgsConstructor;
@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 @Component
 public class CityFuzzySearch implements FuzzySearch<City> {
 	private final double SCORE_THRESHOLD = 0.5;
-	private final CityIndex index;
+	private final QGramIndex<City> index;
 	private final StringComparator comparator;
 
 	@Override
