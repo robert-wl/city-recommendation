@@ -7,6 +7,7 @@ import com.robert.codingchallenge.model.dto.request.PaginationDTO;
 import com.robert.codingchallenge.model.dto.request.SuggestionsRequestDTO;
 import com.robert.codingchallenge.repository.CityRepository;
 import com.robert.codingchallenge.service.CityService;
+import com.robert.codingchallenge.util.CacheKeyGenerator;
 import com.robert.codingchallenge.util.GeoCalculator;
 import com.robert.codingchallenge.util.fuzzysearch.SearchMatch;
 import com.robert.codingchallenge.util.stringcomparator.StringAlgorithm;
@@ -29,8 +30,10 @@ public class CityServiceImpl implements CityService {
 
 	private final CityMapper cityMapper;
 
+	private final CacheKeyGenerator cacheKeyGenerator;
+
 	@Override
-	@Cacheable(value = "cities", key = "#query")
+	@Cacheable(value = "cities", key = "#cacheKeyGenerator.generate(query)")
 	public List<ScoredCityDTO> searchCities(String query) {
 		List<SearchMatch<City>> cities = cityRepository.getCitiesByName(query);
 
@@ -66,7 +69,7 @@ public class CityServiceImpl implements CityService {
 	}
 
 	@Override
-	@Cacheable(value = "cities", key = "#query + '|' + #latitude + '|' + #longitude")
+	@Cacheable(value = "cities", key = "#cacheKeyGenerator.generate(query, latitude, longitude)")
 	public List<ScoredCityDTO> searchCities(String query, Double latitude, Double longitude) {
 
 
@@ -80,7 +83,7 @@ public class CityServiceImpl implements CityService {
 	}
 
 	@Override
-	@Cacheable(value = "cities", key = "#dto.q() + '|' + #dto.latitude() + '|' + #dto.longitude() + '|' + #dto.algorithm() + '|' + #dto.minPopulation() + '|' + #dto.maxPopulation()")
+	@Cacheable(value = "cities", key = "#cacheKeyGenerator.generate(dto)")
 	public List<ScoredCityDTO> searchCities(SuggestionsRequestDTO dto) {
 		String query = dto.q();
 
@@ -116,6 +119,7 @@ public class CityServiceImpl implements CityService {
 	}
 
 	@Override
+	@Cacheable(value = "cities", key = "#cacheKeyGenerator.generate(dto, paginationDTO)")
 	public List<ScoredCityDTO> searchCitiesPaginated(SuggestionsRequestDTO dto, PaginationDTO paginationDTO) {
 		if (paginationDTO.page() == null ^ paginationDTO.pageSize() == null) {
 			throw new IllegalArgumentException("Both page and pageSize must be provided");
@@ -127,13 +131,9 @@ public class CityServiceImpl implements CityService {
 			return cities;
 		}
 
-		int page = paginationDTO.page();
-		int pageSize = paginationDTO.pageSize();
-
-
 		return cities.stream()
-				.skip((long) (page - 1) * pageSize)
-				.limit(pageSize)
+				.skip((long) (paginationDTO.page() - 1) * paginationDTO.pageSize())
+				.limit(paginationDTO.pageSize())
 				.collect(Collectors.toList());
 	}
 }
