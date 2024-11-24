@@ -53,6 +53,10 @@ as a kind of in-memory 'database' to speed up the searching process. In the impl
 names and alternate
 names as the index.
 
+The QGramIndedx and FuzzySearch are made in such a way if there were any other data categories, it can be easily
+extended
+and implemented.
+
 #### Technical Details
 
 The application uses dependency injections on almost every component to make it easier to test. The *lombok* package is
