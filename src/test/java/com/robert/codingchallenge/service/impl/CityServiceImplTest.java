@@ -100,19 +100,6 @@ public class CityServiceImplTest {
 	}
 
 	@Test
-	void testSearchCities_withNoCitiesFound() {
-		String query = "NonExistentCity";
-		when(cityRepository.getCitiesByName(query)).thenReturn(List.of());
-
-
-		List<ScoredCityDTO> result = cityService.searchCities(query, null, null);
-
-
-		assertNotNull(result);
-		assertTrue(result.isEmpty());
-	}
-
-	@Test
 	void testSearchCitiesPaginated_withNoCitiesFound() {
 		SuggestionsRequestDTO dto = mock(SuggestionsRequestDTO.class);
 		PaginationDTO paginationDTO = mock(PaginationDTO.class);

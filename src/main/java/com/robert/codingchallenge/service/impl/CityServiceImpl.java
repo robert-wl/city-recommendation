@@ -55,19 +55,6 @@ public class CityServiceImpl implements CityService {
 				.build();
 	}
 
-	@Override
-	@Cacheable(value = "cities", keyGenerator = "cacheKeyGenerator")
-	public List<ScoredCityDTO> searchCities(String query, Double latitude, Double longitude) {
-
-
-		List<SearchMatch<City>> cities = cityRepository.getCitiesByName(query);
-
-		return cityMapper.toScoredCities(cities).stream()
-				.map(match -> calculateLatitudeLongitude(match, latitude, longitude))
-				.filter(m -> m.getScore() > 0)
-				.sorted((a, b) -> Double.compare(b.getScore(), a.getScore()))
-				.collect(Collectors.toList());
-	}
 
 	@Override
 	@Cacheable(value = "cities", keyGenerator = "cacheKeyGenerator")
