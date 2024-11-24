@@ -94,6 +94,18 @@ public class CityServiceImpl implements CityService {
 				.map(algorithm -> cityRepository.getCitiesByName(query, StringAlgorithm.of(algorithm)))
 				.orElseGet(() -> cityRepository.getCitiesByName(query));
 
+		if (dto.minPopulation() != null) {
+			result = result.stream()
+					.filter(c -> c.getData().getPopulation() >= dto.minPopulation())
+					.toList();
+		}
+
+		if (dto.maxPopulation() != null) {
+			result = result.stream()
+					.filter(c -> c.getData().getPopulation() <= dto.maxPopulation())
+					.toList();
+		}
+
 		List<ScoredCityDTO> cities = cityMapper.toScoredCities(result);
 
 		if (dto.latitude() != null || dto.longitude() != null) {
@@ -101,6 +113,7 @@ public class CityServiceImpl implements CityService {
 					.map(c -> calculateLatitudeLongitude(c, dto.latitude(), dto.longitude()))
 					.toList();
 		}
+
 		return cities;
 	}
 }

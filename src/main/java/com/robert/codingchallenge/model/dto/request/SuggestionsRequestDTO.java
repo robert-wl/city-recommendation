@@ -23,6 +23,14 @@ public record SuggestionsRequestDTO(
 		@Schema(description = "Algorithm to use for search 0 = Levenshtein, 1 = Jaro-Winkler, 2 = Jaccard", nullable = true, example = "0")
 		@Min(value = 0, message = "Algorithm must be between 0 and 2")
 		@Max(value = 2, message = "Algorithm must be between 0 and 2")
-		Integer algorithm
+		Integer algorithm,
+
+		@Schema(description = "Minimum population for search", nullable = true, example = "100000")
+		@Min(value = 0, message = "Minimum population must be greater than or equal to 0")
+		Integer minPopulation,
+
+		@Schema(description = "Maximum population for search", nullable = true, example = "1000000")
+		@Min(value = 0, message = "Maximum population must be greater than or equal to 0")
+		Integer maxPopulation
 ) {
 }
