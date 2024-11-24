@@ -56,7 +56,7 @@ public class CacheKeyGeneratorTest {
 		Object[] params = {};
 
 		Object result = cacheKeyGenerator.generate(target, method, params);
-		
+
 		assertEquals("DummyService#emptyParamsMethod#", result);
 	}
 
