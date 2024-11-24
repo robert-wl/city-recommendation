@@ -10,12 +10,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.List;
 
 import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = CityController.class)
 public class CityControllerTest {
@@ -42,42 +43,42 @@ public class CityControllerTest {
 				.thenReturn(cityList);
 
 
-		mockMvc.perform(MockMvcRequestBuilders.get("/v1/suggestions")
+		mockMvc.perform(get("/v1/suggestions")
 				                .param("q", "testQuery")
 				                .param("latitude", "45.0")
 				                .param("longitude", "90.0")
 				                .param("page", "1")
 				                .param("pageSize", "10"))
-				.andExpect(MockMvcResultMatchers.status().isOk())
-				.andExpect(MockMvcResultMatchers.jsonPath("$.suggestions").isArray())
-				.andExpect(MockMvcResultMatchers.jsonPath("$.suggestions.length()").value(3))
-				.andExpect(MockMvcResultMatchers.jsonPath("$.suggestions[0].name").value("City1"))
-				.andExpect(MockMvcResultMatchers.jsonPath("$.suggestions[1].name").value("City2"))
-				.andExpect(MockMvcResultMatchers.jsonPath("$.suggestions[2].name").value("City3"));
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.suggestions").isArray())
+				.andExpect(jsonPath("$.suggestions.length()").value(3))
+				.andExpect(jsonPath("$.suggestions[0].name").value("City1"))
+				.andExpect(jsonPath("$.suggestions[1].name").value("City2"))
+				.andExpect(jsonPath("$.suggestions[2].name").value("City3"));
 	}
 
 	@Test
 	void testGetSuggestions_withInvalidLatitude() throws Exception {
-		mockMvc.perform(MockMvcRequestBuilders.get("/v1/suggestions")
+		mockMvc.perform(get("/v1/suggestions")
 				                .param("q", "testQuery")
 				                .param("latitude", "100.0")
 				                .param("longitude", "90.0")
 				                .param("page", "1")
 				                .param("pageSize", "10"))
-				.andExpect(MockMvcResultMatchers.status().isBadRequest())
-				.andExpect(MockMvcResultMatchers.jsonPath("$.message.latitude", Matchers.containsString("Latitude must be between")));
+				.andExpect(status().isBadRequest())
+				.andExpect(jsonPath("$.message.latitude", Matchers.containsString("Latitude must be between")));
 	}
 
 	@Test
 	void testGetSuggestions_withInvalidLongitude() throws Exception {
-		mockMvc.perform(MockMvcRequestBuilders.get("/v1/suggestions")
+		mockMvc.perform(get("/v1/suggestions")
 				                .param("q", "testQuery")
 				                .param("latitude", "45.0")
 				                .param("longitude", "200.0")
 				                .param("page", "1")
 				                .param("pageSize", "10"))
-				.andExpect(MockMvcResultMatchers.status().isBadRequest())
-				.andExpect(MockMvcResultMatchers.jsonPath("$.message.longitude", Matchers.containsString("Longitude must be between")));
+				.andExpect(status().isBadRequest())
+				.andExpect(jsonPath("$.message.longitude", Matchers.containsString("Longitude must be between")));
 	}
 
 	@Test
@@ -95,26 +96,26 @@ public class CityControllerTest {
 				.thenReturn(cityList);
 
 
-		mockMvc.perform(MockMvcRequestBuilders.get("/v1/suggestions")
+		mockMvc.perform(get("/v1/suggestions")
 				                .param("q", "testQuery")
 				                .param("page", "1")
 				                .param("pageSize", "10"))
-				.andExpect(MockMvcResultMatchers.status().isOk())
-				.andExpect(MockMvcResultMatchers.jsonPath("$.suggestions").isArray())
-				.andExpect(MockMvcResultMatchers.jsonPath("$.suggestions.length()").value(2))
-				.andExpect(MockMvcResultMatchers.jsonPath("$.suggestions[0].name").value("City1"))
-				.andExpect(MockMvcResultMatchers.jsonPath("$.suggestions[1].name").value("City2"));
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.suggestions").isArray())
+				.andExpect(jsonPath("$.suggestions.length()").value(2))
+				.andExpect(jsonPath("$.suggestions[0].name").value("City1"))
+				.andExpect(jsonPath("$.suggestions[1].name").value("City2"));
 	}
 
 	@Test
 	void testGetSuggestions_withInvalidPagination() throws Exception {
-		mockMvc.perform(MockMvcRequestBuilders.get("/v1/suggestions")
+		mockMvc.perform(get("/v1/suggestions")
 				                .param("q", "testQuery")
 				                .param("latitude", "45.0")
 				                .param("longitude", "90.0")
 				                .param("page", "1")
 				                .param("pageSize", "1000"))
-				.andExpect(MockMvcResultMatchers.status().isBadRequest())
-				.andExpect(MockMvcResultMatchers.jsonPath("$.message.pageSize", Matchers.containsString("Page size")));
+				.andExpect(status().isBadRequest())
+				.andExpect(jsonPath("$.message.pageSize", Matchers.containsString("Page size")));
 	}
 }

@@ -93,9 +93,9 @@ public class CityServiceImplTest {
 		when(paginationDTO.page()).thenReturn(1);
 		when(paginationDTO.pageSize()).thenReturn(null);
 
-		IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-			cityService.searchCitiesPaginated(dto, paginationDTO);
-		});
+		IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
+				                                                  cityService.searchCitiesPaginated(dto, paginationDTO)
+		                                                 );
 		assertEquals("Both page and pageSize must be provided", exception.getMessage());
 	}
 

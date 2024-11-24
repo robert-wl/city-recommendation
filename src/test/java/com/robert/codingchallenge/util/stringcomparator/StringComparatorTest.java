@@ -1,10 +1,12 @@
 package com.robert.codingchallenge.util.stringcomparator;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(MockitoExtension.class)
 public class StringComparatorTest {
@@ -18,7 +20,7 @@ public class StringComparatorTest {
 
 		double score = stringComparator.compare(s1, s2, StringAlgorithm.LEVENSHTEIN);
 
-		Assertions.assertEquals(1.0, score, 0.0001, "Score should be 1.0");
+		assertEquals(1.0, score, 0.0001, "Score should be 1.0");
 	}
 
 	@Test
@@ -28,7 +30,7 @@ public class StringComparatorTest {
 
 		double score = stringComparator.compare(s1, s2, StringAlgorithm.LEVENSHTEIN);
 
-		Assertions.assertTrue(score < 1.0, "Score should be less than 1.0");
+		assertTrue(score < 1.0, "Score should be less than 1.0");
 	}
 
 	@Test
@@ -38,7 +40,7 @@ public class StringComparatorTest {
 
 		double score = stringComparator.compare(s1, s2, StringAlgorithm.LEVENSHTEIN);
 
-		Assertions.assertTrue(score > 0.4, "Score should be greater than 0.4");
+		assertTrue(score > 0.4, "Score should be greater than 0.4");
 	}
 
 	@Test
@@ -48,7 +50,7 @@ public class StringComparatorTest {
 
 		double score = stringComparator.compare(s1, s2, StringAlgorithm.JARO_WINKLER);
 
-		Assertions.assertEquals(1.0, score, 0.0001, "Score should be 1.0");
+		assertEquals(1.0, score, 0.0001, "Score should be 1.0");
 	}
 
 	@Test
@@ -58,7 +60,7 @@ public class StringComparatorTest {
 
 		double score = stringComparator.compare(s1, s2, StringAlgorithm.JARO_WINKLER);
 
-		Assertions.assertTrue(score < 1.0, "Score should be less than 1.0");
+		assertTrue(score < 1.0, "Score should be less than 1.0");
 	}
 
 	@Test
@@ -68,7 +70,7 @@ public class StringComparatorTest {
 
 		double score = stringComparator.compare(s1, s2, StringAlgorithm.JARO_WINKLER);
 
-		Assertions.assertTrue(score > 0.4, "Score should be greater than 0.4");
+		assertTrue(score > 0.4, "Score should be greater than 0.4");
 	}
 
 	@Test
@@ -78,7 +80,7 @@ public class StringComparatorTest {
 
 		double score = stringComparator.compare(s1, s2, StringAlgorithm.JACCARD);
 
-		Assertions.assertEquals(1.0, score, 0.0001, "Score should be 1.0");
+		assertEquals(1.0, score, 0.0001, "Score should be 1.0");
 	}
 
 	@Test
@@ -88,7 +90,7 @@ public class StringComparatorTest {
 
 		double score = stringComparator.compare(s1, s2, StringAlgorithm.JACCARD);
 
-		Assertions.assertTrue(score < 1.0, "Score should be less than 1.0");
+		assertTrue(score < 1.0, "Score should be less than 1.0");
 	}
 
 	@Test
@@ -98,6 +100,6 @@ public class StringComparatorTest {
 
 		double score = stringComparator.compare(s1, s2, StringAlgorithm.JACCARD);
 
-		Assertions.assertTrue(score > 0.4, "Score should be greater than 0.4");
+		assertTrue(score > 0.4, "Score should be greater than 0.4");
 	}
 }

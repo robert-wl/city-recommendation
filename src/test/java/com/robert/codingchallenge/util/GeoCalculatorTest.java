@@ -1,11 +1,13 @@
 package com.robert.codingchallenge.util;
 
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(MockitoExtension.class)
 public class GeoCalculatorTest {
@@ -19,7 +21,7 @@ public class GeoCalculatorTest {
 
 		double score = geoCalculator.score(latitude, longitude, latitude, longitude);
 
-		Assertions.assertEquals(1.0, score, 0.0001, "Score should be 1.0");
+		assertEquals(1.0, score, 0.0001, "Score should be 1.0");
 	}
 
 	@Test
@@ -32,7 +34,7 @@ public class GeoCalculatorTest {
 
 		double score = geoCalculator.score(latitude1, longitude1, latitude2, longitude2);
 
-		Assertions.assertTrue(score > 0.4 && score < 0.6, "Score should be around 0.5");
+		assertTrue(score > 0.4 && score < 0.6, "Score should be around 0.5");
 	}
 
 	@Test
@@ -45,6 +47,6 @@ public class GeoCalculatorTest {
 
 		double score = geoCalculator.score(latitude1, longitude1, latitude2, longitude2);
 
-		Assertions.assertEquals(0.0, score, 0.0001, "Score should be 0.0");
+		assertEquals(0.0, score, 0.0001, "Score should be 0.0");
 	}
 }
