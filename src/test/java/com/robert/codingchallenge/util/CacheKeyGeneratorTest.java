@@ -5,6 +5,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.lang.reflect.Method;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(MockitoExtension.class)
@@ -14,54 +16,70 @@ public class CacheKeyGeneratorTest {
 	private CacheKeyGenerator cacheKeyGenerator;
 
 	@Test
-	void testGenerate_withSingleObject() {
-		TestObject testObject = new TestObject("value1", 42, null);
-		String result = cacheKeyGenerator.generate(testObject);
+	void generate_WithSimpleParameters() throws NoSuchMethodException {
+		Object target = new DummyService();
+		Method method = DummyService.class.getMethod("dummyMethod", String.class, int.class);
+		Object[] params = { "testParam", 42 };
 
-		assertEquals("value1#42#", result, "Cache key generation failed for a single object");
+		Object result = cacheKeyGenerator.generate(target, method, params);
+
+		assertEquals("DummyService#dummyMethod#testParam#42", result);
 	}
 
 	@Test
-	void testGenerate_withMultipleObjects() {
-		TestObject testObject1 = new TestObject("value1", 42, "extra");
-		TestObject testObject2 = new TestObject("another", null, "final");
-		String result = cacheKeyGenerator.generate(testObject1, testObject2);
+	void generate_WithNullParameter() throws NoSuchMethodException {
+		Object target = new DummyService();
+		Method method = DummyService.class.getMethod("dummyMethod", String.class, int.class);
+		Object[] params = { "testParam", null };
 
-		assertEquals("value1#42#extra#another##final", result, "Cache key generation failed for multiple objects");
+		Object result = cacheKeyGenerator.generate(target, method, params);
+
+		assertEquals("DummyService#dummyMethod#testParam#", result);
 	}
 
 	@Test
-	void testGenerate_withNullObject() {
-		String result = cacheKeyGenerator.generate((Object) null);
+	void generate_WithComplexObject() throws NoSuchMethodException {
+		Object target = new DummyService();
+		Method method = DummyService.class.getMethod("complexMethod", DummyObject.class);
+		DummyObject dummyObject = new DummyObject("John", 30);
+		Object[] params = { dummyObject };
 
-		assertEquals("", result, "Cache key generation failed for a null object");
+		Object result = cacheKeyGenerator.generate(target, method, params);
+
+		assertEquals("DummyService#complexMethod#John#30", result);
 	}
 
 	@Test
-	void testGenerate_withEmptyFields() {
-		TestObject emptyObject = new TestObject(null, null, null);
-		String result = cacheKeyGenerator.generate(emptyObject);
+	void generate_WithEmptyParams() throws NoSuchMethodException {
+		Object target = new DummyService();
+		Method method = DummyService.class.getMethod("emptyParamsMethod");
+		Object[] params = {};
 
-		assertEquals("##", result, "Cache key generation failed for an object with empty fields");
-	}
-
-	@Test
-	void testGenerate_withNoObjects() {
-		String result = cacheKeyGenerator.generate();
-
-		assertEquals("", result, "Cache key generation failed for no objects");
+		Object result = cacheKeyGenerator.generate(target, method, params);
+		
+		assertEquals("DummyService#emptyParamsMethod#", result);
 	}
 
 
-	private static class TestObject {
-		private final String field1;
-		private final Integer field2;
-		private final String field3;
+	static class DummyService {
+		public void dummyMethod(String param1, int param2) {
+		}
 
-		public TestObject(String field1, Integer field2, String field3) {
-			this.field1 = field1;
-			this.field2 = field2;
-			this.field3 = field3;
+		public void complexMethod(DummyObject object) {
+		}
+
+		public void emptyParamsMethod() {
+		}
+	}
+
+
+	static class DummyObject {
+		private final String name;
+		private final int age;
+
+		DummyObject(String name, int age) {
+			this.name = name;
+			this.age = age;
 		}
 	}
 }

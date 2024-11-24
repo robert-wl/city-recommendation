@@ -30,6 +30,11 @@ public class CacheKeyGenerator implements KeyGenerator {
 		}
 
 		Class<?> clazz = object.getClass();
+
+		if (clazz.getPackageName().startsWith("java.")) {
+			return object.toString();
+		}
+
 		StringBuilder result = new StringBuilder();
 
 		for (Field field : clazz.getDeclaredFields()) {
