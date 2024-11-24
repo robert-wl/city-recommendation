@@ -32,6 +32,7 @@ dependencies {
     implementation 'org.springdoc:springdoc-openapi-ui:1.7.0'
 
     implementation 'org.apache.commons:commons-text:1.11.0'
+    implementation 'com.github.mpkorstanje:simmetrics-core:4.1.1'
 
     implementation 'org.springframework.boot:spring-boot-starter-cache'
     implementation 'com.github.ben-manes.caffeine:caffeine'

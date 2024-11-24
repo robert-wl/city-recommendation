@@ -3,6 +3,7 @@ package com.robert.codingchallenge.service.impl;
 import com.robert.codingchallenge.mapper.CityMapper;
 import com.robert.codingchallenge.model.data.City;
 import com.robert.codingchallenge.model.dto.ScoredCityDTO;
+import com.robert.codingchallenge.model.dto.request.PaginationDTO;
 import com.robert.codingchallenge.model.dto.request.SuggestionsRequestDTO;
 import com.robert.codingchallenge.repository.CityRepository;
 import com.robert.codingchallenge.service.CityService;
@@ -39,9 +40,13 @@ public class CityServiceImpl implements CityService {
 				.collect(Collectors.toList());
 	}
 
-	private ScoredCityDTO calculateFinalScore(ScoredCityDTO city, Double latitude, Double longitude) {
-		if (latitude == null || longitude == null) {
+	private ScoredCityDTO calculateLatitudeLongitude(ScoredCityDTO city, Double latitude, Double longitude) {
+		if (latitude == null && longitude == null) {
 			return city;
+		}
+
+		if (latitude == null ^ longitude == null) {
+			throw new IllegalArgumentException("Longitude and latitude must be provided together");
 		}
 
 		final double scoreRatio = 0.7;
@@ -68,31 +73,21 @@ public class CityServiceImpl implements CityService {
 		List<SearchMatch<City>> cities = cityRepository.getCitiesByName(query);
 
 		return cityMapper.toScoredCities(cities).stream()
-				.map(match -> calculateFinalScore(match, latitude, longitude))
+				.map(match -> calculateLatitudeLongitude(match, latitude, longitude))
 				.filter(m -> m.getScore() > 0)
 				.sorted((a, b) -> Double.compare(b.getScore(), a.getScore()))
 				.collect(Collectors.toList());
 	}
 
-	private ScoredCityDTO calculateLatitudeLongitude(ScoredCityDTO city, Double latitude, Double longitude) {
-		if (latitude != null && longitude == null) {
-			throw new IllegalArgumentException("Longitude must be provided if latitude is provided");
-		}
-
-		if (longitude != null && latitude == null) {
-			throw new IllegalArgumentException("Latitude must be provided if longitude is provided");
-		}
-
-		return calculateFinalScore(city, latitude, longitude);
-	}
-
 	@Override
+	@Cacheable(value = "cities", key = "#dto.q() + '|' + #dto.latitude() + '|' + #dto.longitude() + '|' + #dto.algorithm() + '|' + #dto.minPopulation() + '|' + #dto.maxPopulation()")
 	public List<ScoredCityDTO> searchCities(SuggestionsRequestDTO dto) {
 		String query = dto.q();
 
 		List<SearchMatch<City>> result = Optional.ofNullable(dto.algorithm())
 				.map(algorithm -> cityRepository.getCitiesByName(query, StringAlgorithm.of(algorithm)))
 				.orElseGet(() -> cityRepository.getCitiesByName(query));
+
 
 		if (dto.minPopulation() != null) {
 			result = result.stream()
@@ -114,6 +109,31 @@ public class CityServiceImpl implements CityService {
 					.toList();
 		}
 
-		return cities;
+		return cities.stream()
+				.filter(m -> m.getScore() > 0)
+				.sorted((a, b) -> Double.compare(b.getScore(), a.getScore()))
+				.collect(Collectors.toList());
+	}
+
+	@Override
+	public List<ScoredCityDTO> searchCitiesPaginated(SuggestionsRequestDTO dto, PaginationDTO paginationDTO) {
+		if (paginationDTO.page() == null ^ paginationDTO.pageSize() == null) {
+			throw new IllegalArgumentException("Both page and pageSize must be provided");
+		}
+
+		List<ScoredCityDTO> cities = searchCities(dto);
+
+		if (paginationDTO.page() == null) {
+			return cities;
+		}
+
+		int page = paginationDTO.page();
+		int pageSize = paginationDTO.pageSize();
+
+
+		return cities.stream()
+				.skip((long) (page - 1) * pageSize)
+				.limit(pageSize)
+				.collect(Collectors.toList());
 	}
 }

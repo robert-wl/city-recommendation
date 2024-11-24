@@ -53,7 +53,7 @@ public class CityFuzzySearch implements FuzzySearch<City> {
 
 	@Override
 	public List<SearchMatch<City>> search(String query) {
-		return search(query, StringAlgorithm.LEVENSHTEIN);
+		return search(query, StringAlgorithm.JACCARD);
 	}
 
 	@Override

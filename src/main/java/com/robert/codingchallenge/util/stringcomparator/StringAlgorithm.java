@@ -15,16 +15,11 @@ public enum StringAlgorithm {
 		if (value == null) {
 			return null;
 		}
-		switch (value) {
-			case 0:
-				return LEVENSHTEIN;
-			case 1:
-				return JARO_WINKLER;
-			case 2:
-				return JACCARD;
-			default:
-				return null;
-		}
+		return switch (value) {
+			case 1 -> JARO_WINKLER;
+			case 2 -> JACCARD;
+			default -> LEVENSHTEIN;
+		};
 	}
 
 	@Override
