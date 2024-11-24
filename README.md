@@ -37,21 +37,31 @@ The Api documentation can be accessed at `/api-docs`
 
 ### Architecture and Design
 
+##### Architecture
+
 The application uses a layered architecture with the following components:
 
-1. Controller
-2. Service
-3. Repository
+1. Controller: Receives requests and validates input
+2. Service: Contains the business logic and interacts with the repository
+3. Repository: Contains the data access logic
 
-The application does not use any database and the data is loaded from a TSV file into memory. An Q-Gram/N-Gram index is
+##### Database / Data Storage
+
+The application does not use any database and the data is loaded from a TSV file into memory. A Q-Gram/N-Gram index is
 used
-as a kind of in-memory 'database' to speed up the search process. In the implementation, it indexes the city names and
-alternative names.
+as a kind of in-memory 'database' to speed up the searching process. In the implementation, it uses the Q-Gram-ed city
+names and alternate
+names as the index.
+
+#### Technical Details
 
 The application uses dependency injections on almost every component to make it easier to test. The *lombok* package is
 used to reduce boilerplate code.
+
 The dependencies are injected through the constructor, which may not be visible due to the usage of
 *lombok's* `@AllArgsConstructor` Annotations
+
+All errors are handled by the `GlobalExceptionHandler` class, which returns a JSON response with the appropriate status
 
 ### Key Features
 
