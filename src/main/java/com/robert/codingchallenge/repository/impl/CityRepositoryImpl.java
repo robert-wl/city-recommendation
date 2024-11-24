@@ -4,8 +4,9 @@ import com.robert.codingchallenge.model.data.City;
 import com.robert.codingchallenge.repository.CityRepository;
 import com.robert.codingchallenge.util.FileReader;
 import com.robert.codingchallenge.util.TSVParser;
+import com.robert.codingchallenge.util.fuzzysearch.FuzzySearch;
 import com.robert.codingchallenge.util.fuzzysearch.SearchMatch;
-import com.robert.codingchallenge.util.fuzzysearch.impl.CityFuzzySearch;
+import com.robert.codingchallenge.util.stringcomparator.StringAlgorithm;
 import jakarta.annotation.PostConstruct;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +20,7 @@ import java.util.Map;
 @Repository
 public class CityRepositoryImpl implements CityRepository {
 	private final String DATA_FILE = "cities_canada-usa.tsv";
-	private final CityFuzzySearch cities;
+	private final FuzzySearch<City> cities;
 	private final TSVParser tsvParser;
 	private final FileReader fileReader;
 
@@ -36,7 +37,8 @@ public class CityRepositoryImpl implements CityRepository {
 				"lat", "latitude",
 				"long", "longitude",
 				"country", "country",
-				"tz", "tz"
+				"tz", "tz",
+				"population", "population"
 		                                          );
 
 		String tsvContent = fileReader.read(DATA_FILE)
@@ -52,5 +54,10 @@ public class CityRepositoryImpl implements CityRepository {
 	@Override
 	public List<SearchMatch<City>> getCitiesByName(String q) {
 		return cities.search(q);
+	}
+
+	@Override
+	public List<SearchMatch<City>> getCitiesByName(String q, StringAlgorithm algo) {
+		return cities.search(q, algo);
 	}
 }

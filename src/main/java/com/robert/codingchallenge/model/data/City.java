@@ -20,4 +20,5 @@ public class City {
 	private String tz;
 	private Double latitude;
 	private Double longitude;
+	private Integer population;
 }

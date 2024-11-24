@@ -4,7 +4,7 @@ import com.robert.codingchallenge.model.dto.ScoredCityDTO;
 
 import java.util.List;
 
-public record GetSuggestionsResponseDTO(
+public record SuggestionsResponseDTO(
 		List<ScoredCityDTO> suggestions
 ) {
 }

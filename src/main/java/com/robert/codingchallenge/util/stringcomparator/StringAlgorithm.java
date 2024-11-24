@@ -11,6 +11,17 @@ public enum StringAlgorithm {
 		this.name = name;
 	}
 
+	public static StringAlgorithm of(Integer value) {
+		if (value == null) {
+			return null;
+		}
+		return switch (value) {
+			case 1 -> JARO_WINKLER;
+			case 2 -> JACCARD;
+			default -> LEVENSHTEIN;
+		};
+	}
+
 	@Override
 	public String toString() {
 		return name;

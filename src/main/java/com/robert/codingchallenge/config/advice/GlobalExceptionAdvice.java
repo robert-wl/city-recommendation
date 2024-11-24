@@ -1,4 +1,4 @@
-package com.robert.codingchallenge.config;
+package com.robert.codingchallenge.config.advice;
 
 import com.robert.codingchallenge.model.dto.response.ErrorResponseDTO;
 import io.swagger.v3.oas.annotations.Hidden;
@@ -29,7 +29,7 @@ public class GlobalExceptionAdvice {
 		);
 		return ResponseEntity.badRequest().body(error);
 	}
-	
+
 	@ExceptionHandler(ConstraintViolationException.class)
 	public ResponseEntity<ErrorResponseDTO> handleIllegalArgument(ConstraintViolationException ex) {
 		ErrorResponseDTO error = new ErrorResponseDTO(
@@ -73,16 +73,16 @@ public class GlobalExceptionAdvice {
 		);
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
 	}
-
-	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-	@ExceptionHandler(Exception.class)
-	public ResponseEntity<ErrorResponseDTO> handleGenericException(Exception ex) {
-		log.error("An unexpected error occurred.", ex);
-		ErrorResponseDTO error = new ErrorResponseDTO(
-				HttpStatus.INTERNAL_SERVER_ERROR.value(),
-				HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(),
-				Map.of("error", "An unexpected error occurred. Please try again later.")
-		);
-		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
-	}
+//
+//	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+//	@ExceptionHandler(Exception.class)
+//	public ResponseEntity<ErrorResponseDTO> handleGenericException(Exception ex) {
+//		log.error("An unexpected error occurred.", ex);
+//		ErrorResponseDTO error = new ErrorResponseDTO(
+//				HttpStatus.INTERNAL_SERVER_ERROR.value(),
+//				HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(),
+//				Map.of("error", "An unexpected error occurred. Please try again later.")
+//		);
+//		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+//	}
 }
