@@ -7,7 +7,6 @@ import com.robert.codingchallenge.model.dto.request.PaginationDTO;
 import com.robert.codingchallenge.model.dto.request.SuggestionsRequestDTO;
 import com.robert.codingchallenge.repository.CityRepository;
 import com.robert.codingchallenge.service.CityService;
-import com.robert.codingchallenge.util.CacheKeyGenerator;
 import com.robert.codingchallenge.util.GeoCalculator;
 import com.robert.codingchallenge.util.fuzzysearch.SearchMatch;
 import com.robert.codingchallenge.util.stringcomparator.StringAlgorithm;
@@ -30,18 +29,6 @@ public class CityServiceImpl implements CityService {
 
 	private final CityMapper cityMapper;
 
-	private final CacheKeyGenerator cacheKeyGenerator;
-
-	@Override
-	@Cacheable(value = "cities", key = "#cacheKeyGenerator.generate(query)")
-	public List<ScoredCityDTO> searchCities(String query) {
-		List<SearchMatch<City>> cities = cityRepository.getCitiesByName(query);
-
-		return cityMapper.toScoredCities(cities).stream()
-				.filter(m -> m.getScore() > 0)
-				.sorted((a, b) -> Double.compare(b.getScore(), a.getScore()))
-				.collect(Collectors.toList());
-	}
 
 	private ScoredCityDTO calculateLatitudeLongitude(ScoredCityDTO city, Double latitude, Double longitude) {
 		if (latitude == null && longitude == null) {
@@ -69,7 +56,7 @@ public class CityServiceImpl implements CityService {
 	}
 
 	@Override
-	@Cacheable(value = "cities", key = "#cacheKeyGenerator.generate(query, latitude, longitude)")
+	@Cacheable(value = "cities", keyGenerator = "cacheKeyGenerator")
 	public List<ScoredCityDTO> searchCities(String query, Double latitude, Double longitude) {
 
 
@@ -83,7 +70,7 @@ public class CityServiceImpl implements CityService {
 	}
 
 	@Override
-	@Cacheable(value = "cities", key = "#cacheKeyGenerator.generate(dto)")
+	@Cacheable(value = "cities", keyGenerator = "cacheKeyGenerator")
 	public List<ScoredCityDTO> searchCities(SuggestionsRequestDTO dto) {
 		String query = dto.q();
 
@@ -119,7 +106,7 @@ public class CityServiceImpl implements CityService {
 	}
 
 	@Override
-	@Cacheable(value = "cities", key = "#cacheKeyGenerator.generate(dto, paginationDTO)")
+	@Cacheable(value = "cities", keyGenerator = "cacheKeyGenerator")
 	public List<ScoredCityDTO> searchCitiesPaginated(SuggestionsRequestDTO dto, PaginationDTO paginationDTO) {
 		if (paginationDTO.page() == null ^ paginationDTO.pageSize() == null) {
 			throw new IllegalArgumentException("Both page and pageSize must be provided");
