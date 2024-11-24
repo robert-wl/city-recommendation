@@ -9,7 +9,9 @@ import com.robert.codingchallenge.util.stringcomparator.StringComparator;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -25,8 +27,8 @@ public class CityFuzzySearch implements FuzzySearch<City> {
 		index.add(data);
 	}
 
-	private SearchMatch<City> createSearchMatch(City city, String queryLower) {
-		double score = comparator.compare(city.getName().toLowerCase(), queryLower, StringAlgorithm.JACCARD);
+	private SearchMatch<City> createSearchMatch(City city, String queryLower, StringAlgorithm algorithm) {
+		double score = comparator.compare(city.getName().toLowerCase(), queryLower, algorithm);
 		return new SearchMatch<>(city, score);
 	}
 
@@ -35,23 +37,29 @@ public class CityFuzzySearch implements FuzzySearch<City> {
 		match.setScore(normalizedScore);
 	}
 
-	@Override
-	public List<SearchMatch<City>> search(String query) {
-		Set<City> result = index.search(query);
-
+	private List<SearchMatch<City>> processSearchResults(Set<City> result, String queryLower, StringAlgorithm algorithm) {
 		if (result.isEmpty()) {
-			return List.of();
+			return Collections.emptyList();
 		}
 
-		String queryLower = query.toLowerCase();
-
 		return result.stream()
-				.map(c -> createSearchMatch(c, queryLower))
-				.filter(m -> m.getScore() >= SCORE_THRESHOLD)
+				.map(city -> createSearchMatch(city, queryLower, algorithm))
+				.filter(match -> match.getScore() >= SCORE_THRESHOLD)
 				.peek(this::normalizeScore)
-				.filter(m -> m.getScore() != 0)
-				.sorted((m1, m2) -> Double.compare(m2.getScore(), m1.getScore()))
+				.filter(match -> match.getScore() != 0)
+				.sorted((match1, match2) -> Double.compare(match2.getScore(), match1.getScore()))
 				.collect(Collectors.toList());
 	}
 
+	@Override
+	public List<SearchMatch<City>> search(String query) {
+		return search(query, StringAlgorithm.LEVENSHTEIN);
+	}
+
+	@Override
+	public List<SearchMatch<City>> search(String query, StringAlgorithm algorithm) {
+		String queryLower = Optional.ofNullable(query).orElse("").toLowerCase();
+		Set<City> result = index.search(queryLower);
+		return processSearchResults(result, queryLower, algorithm);
+	}
 }
