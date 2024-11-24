@@ -32,11 +32,6 @@ public class CityIndex extends QGramIndex<City> {
 	@Override
 	public Set<City> search(String q) {
 		if (q.length() < qSize) {
-			var temp = index.keySet().stream().toList();
-			var res = temp.stream()
-					.filter(k -> k.contains(q.toLowerCase()))
-					.flatMap(k -> index.get(k).stream())
-					.collect(Collectors.toSet());
 			return index.keySet().stream()
 					.filter(k -> k.contains(q.toLowerCase()))
 					.flatMap(k -> index.get(k).stream())
